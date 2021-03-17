@@ -1,8 +1,10 @@
 package com.udacity.pricing.entity;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
@@ -10,22 +12,24 @@ import java.math.BigDecimal;
  * Represents the price of a given vehicle, including currency.
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Price {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue
+    private Long vehicleId;
 
     private String currency;
     private BigDecimal price;
 
+
     public Price() {
     }
 
-    public Price(String currency, BigDecimal price, Long id) {
+    public Price(String currency, BigDecimal price, Long vehicleId) {
         this.currency = currency;
         this.price = price;
-        this.id = id;
+        this.vehicleId = vehicleId;
     }
 
     public String getCurrency() {
@@ -44,11 +48,11 @@ public class Price {
         this.price = price;
     }
 
-    public Long getId() {
-        return id;
+    public Long getVehicleId() {
+        return vehicleId;
     }
 
-    public void setId(Long vehicleId) {
-        this.id = vehicleId;
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 }

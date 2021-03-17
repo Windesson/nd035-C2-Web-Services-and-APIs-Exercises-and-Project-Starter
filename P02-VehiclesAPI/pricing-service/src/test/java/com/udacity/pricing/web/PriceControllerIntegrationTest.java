@@ -29,8 +29,8 @@ public class PriceControllerIntegrationTest {
 
     @Test
     public void getPrices() {
-        ResponseEntity<Object> response =
-                this.restTemplate.getForEntity("http://localhost:" + port + "/prices/", Object.class);
+        ResponseEntity<List> response =
+                this.restTemplate.getForEntity("http://localhost:" + port + "/services/price/", List.class);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
