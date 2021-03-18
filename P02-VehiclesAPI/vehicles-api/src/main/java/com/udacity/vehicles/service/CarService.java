@@ -9,8 +9,10 @@ import com.udacity.vehicles.domain.car.CarRepository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 /**
  * Implements the car service create, read, update or delete
@@ -53,33 +55,24 @@ public class CarService {
         else throw new CarNotFoundException();
 
         try {
-            String priceStr = pricing.get().uri("/services/price?vehicleId="+id).toString();
-            Price price = new ObjectMapper().readValue(priceStr, Price.class);
+            Price price = pricing.get().uri("/services/price?vehicleId="+id).accept(MediaType.APPLICATION_JSON)
+                        .retrieve().bodyToMono(Price.class).block();
             car.setPrice(price.getCurrency()+price.getPrice());
         } catch (Exception ex){
-            //ignore
+             System.out.println(ex);
         }
 
-        /**
-         * TODO: Use the Maps Web client you create in `VehiclesApiApplication`
-         *   to get the address for the vehicle. You should access the location
-         *   from the car object and feed it to the Maps service.
-         * TODO: Set the location of the vehicle, including the address information
-         * Note: The Location class file also uses @transient for the address,
-         * meaning the Maps service needs to be called each time for the address.
-         * http://localhost:9191/maps?lat=1&lon=1
-         */
         try {
             Location loc = car.getLocation();
-            String uriStr = String.format("/maps?lat={0}&lon={1}", loc.getLat(), loc.getLon());
-            String mapStr = pricing.get().uri(uriStr).toString();
-            Address address = new ObjectMapper().readValue(mapStr, Address.class);
+            String uriStr = String.format("/maps?lat=%1$s&lon=%2$s", loc.getLat(), loc.getLon());
+            Address address = maps.get().uri(uriStr).accept(MediaType.APPLICATION_JSON)
+                    .retrieve().bodyToMono(Address.class).block();
             loc.setAddress(address.getAddress());
             loc.setCity(address.getCity());
             loc.setState(address.getState());
             loc.setZip(address.getZip());
         } catch (Exception ex){
-            //ignore
+            System.out.println(ex);
         }
 
 
@@ -97,6 +90,7 @@ public class CarService {
                     .map(carToBeUpdated -> {
                         carToBeUpdated.setDetails(car.getDetails());
                         carToBeUpdated.setLocation(car.getLocation());
+                        carToBeUpdated.setCondition(car.getCondition());
                         return repository.save(carToBeUpdated);
                     }).orElseThrow(CarNotFoundException::new);
         }
