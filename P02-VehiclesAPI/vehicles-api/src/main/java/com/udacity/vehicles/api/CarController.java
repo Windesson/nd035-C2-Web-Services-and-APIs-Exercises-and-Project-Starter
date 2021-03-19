@@ -75,7 +75,8 @@ class CarController {
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
         carService.save(car);
         Resource<Car> resource = assembler.toResource(car);
-        return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
+        URI uri = new URI(resource.getId().expand().getHref());
+        return ResponseEntity.created(uri).body(resource);
     }
 
     /**
