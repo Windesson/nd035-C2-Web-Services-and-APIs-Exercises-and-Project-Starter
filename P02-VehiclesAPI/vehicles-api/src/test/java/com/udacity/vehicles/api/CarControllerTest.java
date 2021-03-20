@@ -31,6 +31,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 /**
  * Implements testing of the CarController class.
@@ -112,6 +113,25 @@ public class CarControllerTest {
                         .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(expectedID)));
+    }
+
+
+    /**
+     * Tests the read operation for a single car by ID.
+     * @throws Exception if the read operation for a single car fails
+     */
+    @Test
+    public void updateCar() throws Exception {
+        int expectedID = Math.toIntExact(example_car.getId());
+        example_car.setCondition(Condition.NEW);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(new URI("/cars/"+example_car.getId()))
+                        .content(json.write(example_car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(expectedID)))
+                .andExpect(jsonPath("$.condition", is(Condition.NEW.toString())));
     }
 
     /**
