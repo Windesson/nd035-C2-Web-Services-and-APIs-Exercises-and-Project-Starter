@@ -55,7 +55,7 @@ public class CarService {
         else throw new CarNotFoundException();
 
         try {
-            Price price = pricing.get().uri("/services/price?vehicleId="+id).accept(MediaType.APPLICATION_JSON)
+            Price price = pricing.get().uri("/prices/"+id).accept(MediaType.APPLICATION_JSON)
                         .retrieve().bodyToMono(Price.class).block();
             car.setPrice(price.getCurrency()+price.getPrice());
         } catch (Exception ex){

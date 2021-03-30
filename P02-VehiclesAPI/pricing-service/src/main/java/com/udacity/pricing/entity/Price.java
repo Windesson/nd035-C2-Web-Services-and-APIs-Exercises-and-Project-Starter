@@ -17,7 +17,7 @@ public class Price {
 
     @Id
     @GeneratedValue
-    private Long vehicleId;
+    private Long id;
 
     private String currency;
     private BigDecimal price;
@@ -29,7 +29,7 @@ public class Price {
     public Price(String currency, BigDecimal price, Long vehicleId) {
         this.currency = currency;
         this.price = price;
-        this.vehicleId = vehicleId;
+        this.id = vehicleId;
     }
 
     public String getCurrency() {
@@ -49,10 +49,10 @@ public class Price {
     }
 
     public Long getVehicleId() {
-        return vehicleId;
+        return id;
     }
 
     public void setVehicleId(Long vehicleId) {
-        this.vehicleId = vehicleId;
+        this.id = vehicleId;
     }
 }
